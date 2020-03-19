@@ -2,7 +2,7 @@ To run the application you basically need to clone the repository and run
 
     docker-compose up
 
-To run in locally install packages listed in requirements.txt and run
+To run in locally, install packages listed in requirements.txt and run
 
     python manage.py runserver
     
