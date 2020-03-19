@@ -1,0 +1,32 @@
+{% load socialaccount %}
+{% providers_media_js %}
+<html>
+    <head>
+        <title>Registration</title>
+    </head>
+    <body>
+        <div>
+             <a href="{% provider_login_url "facebook" method="js_sdk" %}">Facebook connect</a>
+        </div>
+        <div>
+             <a href="{% provider_login_url "google" %}">Google connect</a>
+        </div>
+        <br>
+        <form action="{% url 'login-standard' %}" method="POST">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td><input type="text" name="login" placeholder="login"/></td>
+                </tr>
+                <tr>
+                    <td><input type="password" name="password" placeholder="password"/></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button type="submit">Login</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>

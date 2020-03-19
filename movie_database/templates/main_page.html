@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Database</title>
+</head>
+<body>
+    <div>
+        {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="{% url 'logout' %}">Log off</a>
+            </li>
+        {% endif %}
+        Hello {{ user }}
+        {% if movie_form %}
+            <form action="{% url 'main-page' %}" method="POST">
+                {% csrf_token %}
+                {{ movie_form.as_p }}
+                <button type="submit">Search</button>
+            </form>
+        {% endif %}
+        {% if movies %}
+
+            <div class="pagination">
+                {% if movies.has_previous %}
+                    <a href="?page=1&&title={{ title }}"><<</a>
+                    <a href="?page={{ movies.previous_page_number }}&&title={{ title }}"><</a>
+                {% endif %}
+                {% for num in movies.paginator.page_range %}
+                    {% if movies.number == num %}
+                        <span><strong>{{ num }}</strong></span>
+                    {% elif num > movies.number|add:'-3' and num < movies.number|add:'3' %}
+                        <a href="?page={{ num }}&&title={{ title }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if movies.has_next %}
+                <a href="?page={{ movies.next_page_number }}&&title={{ title }}">></a>
+                <a href="?page={{ movies.paginator.num_pages }}&&title={{ title }}">>></a>
+                {% endif %}
+            </div>
+            {% for movie in movies %}
+                <div>
+                    <span>
+                    {{ movie.title }}
+                    {{ movie.year }}
+                    {{ movie.type }}
+                    {{ movie.imdb_id }}
+                    {% if movie.favourite == False %}
+                        No
+                    {% endif %}
+                    </span>
+                    <img src="{{ movie.poster }}">
+
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>
