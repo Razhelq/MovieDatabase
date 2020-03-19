@@ -58,3 +58,28 @@ class MainPage(View):
                 pass
 
 
+class LoginView(View):
+
+    def post(self, request):
+        name = request.POST.get('login')
+        password = request.POST.get('password')
+        try:
+            new_user = User.objects.get(username=name)
+        except ObjectDoesNotExist:
+            new_user = User.objects.create(username=name)
+            new_user.set_password(password)
+            new_user.save()
+        user = authenticate(username=name, password=password)
+        try:
+            login(request, user)
+        except ValueError:
+            "Wrong password"
+        return redirect('main-page')
+
+
+class LogoutView(View):
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            logout(request)
+        return redirect('main-page')
