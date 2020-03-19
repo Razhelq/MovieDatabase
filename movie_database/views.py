@@ -46,10 +46,11 @@ class MainPage(View):
     def look_for_movie(title):
         movies_json = requests.get(f'https://omdbapi.com/?s={title}&apikey=8e68ddd9').json()
         for movie in movies_json['Search']:
+            print(movie)
             try:
                 Movie.objects.create(
                     title=movie['Title'],
-                    year=movie['Year'],
+                    year=movie['Year'][:4],
                     imdb_id=movie['imdbID'],
                     type=movie['Type'],
                     poster=movie['Poster']
@@ -82,4 +83,23 @@ class LogoutView(View):
     def get(self, request):
         if request.user.is_authenticated:
             logout(request)
+        return redirect('main-page')
+
+
+class FavView(View):
+
+    def get(self, request):
+        movies = Movie.objects.filter(user=request.user)
+        paginator = Paginator(movies, 1)
+        page = request.GET.get('page')
+        movies = paginator.get_page(page)
+        return render(request, 'main_page.html', {'movies': movies})
+
+    def post(self, request, id):
+        user = request.user
+        movie = Movie.objects.get(id=id)
+        if user in movie.user.all():
+            movie.user.remove(User.objects.get(username=user))
+        else:
+            movie.user.add(User.objects.get(username=user))
         return redirect('main-page')
