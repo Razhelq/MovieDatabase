@@ -7,7 +7,7 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
 
-from movie_database.forms import MovieForm, LoginForm
+from movie_database.forms import MovieForm
 from movie_database.models import Movie
 
 
